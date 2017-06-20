@@ -148,7 +148,7 @@ if __name__ == '__main__':
     # KVS Credentials
     kvs_auth_data = {
         "keyId": "KEY-ATN59618-1",
-        "keyValue": "42ff84734541cbd98f674b02555330ef"
+        "keyValue": "42ff84734541cbd98f674b02555330ef",
         "cname": "ATN596",
     }
 

@@ -5,7 +5,7 @@ This file runs various API calls for a cloud deployment
 
 from mwmApi import MwmApi
 from mlpApi import MlpApi
-from datetime import datetime, timedelta
+import time
 
 if __name__ == '__main__':
 
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     # KVS Credentials
     kvs_auth_data = {
         "keyId": "KEY-ATN59618-1",
-        "keyValue": "42ff84734541cbd98f674b02555330ef"
+        "keyValue": "42ff84734541cbd98f674b02555330ef",
         "cname": "ATN596",
     }
 
@@ -24,11 +24,11 @@ if __name__ == '__main__':
         mwm_service_hostname = mlp_api.get_mwm_service_url()
         
         client = "api-client"       # Simple string parameter to identify your service to MWM
-        login_timeout = str(50*60)  # seconds
+        login_timeout = str(5*60)  # seconds
         
     with MwmApi(mwm_service_hostname) as mwm_api:
         loginResponse = mwm_api.login(client, login_timeout, kvs_auth_data)
-        print(loginResponse)
+        #print(loginResponse)
 
         # Get managed devices
         managedDeviceResponse = mwm_api.get_managed_devices()
@@ -37,3 +37,9 @@ if __name__ == '__main__':
         # Fetch Location tree
         locationTreeResponse = mwm_api.get_location_tree()
         print(locationTreeResponse)
+
+        # Download Association Analytics File
+        start = time.time()-(24*60*60*1000)
+        analytics_start_time = int(round(start))
+        analytics_end_time = int(round(time.time()))
+        mwm_api.download_association_analytics_file("assocAnalytics_%s" % analytics_end_time, analytics_start_time, analytics_end_time, 'JSON', True)
