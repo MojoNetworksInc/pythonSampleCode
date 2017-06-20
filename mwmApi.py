@@ -27,6 +27,7 @@ PATH_LOCATION_TREE = "locations/tree"
 PATH_MANAGED_DEVICES = "devices/manageddevices"
 PATH_CLIENTS = "devices/clients"
 PATH_ASSOCIATION_ANALYTICS = "analytics/associationdata/{start_time}/{end_time}"    # Path parameters
+PATH_SSID_PROFILES = "templates/SSID_PROFILE"
 
 QUERY_FILTER = "filter=%s"
 QUERY_LOCATION_ID = "locationid=%s"
@@ -167,6 +168,18 @@ class MwmApi:
             print("Unrecognised status for logout" + response.status_code)
             raise
 
+    def get_ssid_profiles(self):
+        """
+        Fetch all SSID profiles
+        
+        """
+        response = self.request(PATH_SSID_PROFILES)
+
+        if response.status_code == requests.codes.ok:
+            return response.json()
+        else:
+            print("Unrecognised status for location tree fetch" + response.status_code)
+		
     def get_location_tree(self):
         """ Fetch location tree
 
@@ -257,6 +270,38 @@ class MwmApi:
         else:
             print("Unrecognised status while retrieving file" + response.status_code)
 
+
+    def get_clients(self):
+        """ Fetch managed device with specified filter
+
+        :return: response object
+        """
+
+        # Device with (boxid = 1) OR (troubleshootingstatus = 0)
+        filter_value = {
+            "value": [
+                {
+                    "property": "boxid",
+                    "value": [1],
+                    "operator": "="
+                },
+                {
+                    "property": "troubleshootingstatus",
+                    "value": [0],
+                    "operator": "="
+                }
+            ],
+            "operator": "OR"
+        }
+        query = QUERY_FILTER % json.dumps(filter_value)
+
+        response = self.request(PATH_CLIENTS, query)
+
+        if response.status_code == requests.codes.ok:
+            return response.json()
+        else:
+            print("Unrecognised status for managed device fetch" + response.status_code)
+
 if __name__ == '__main__':
 
     # MWM Server API instance
@@ -271,8 +316,14 @@ if __name__ == '__main__':
         "keyValue": "42ff84734541cbd98f674b02555330ef",
         "cname": "ATN596",
     }
-    print(mwm_api.login(client, login_timeout, kvs_service))
-
+    print(mwm_api.login(client, login_timeout, kvs_auth_data))
+    
+    #Get clients
+    print(mwm_api.get_clients())
+    
+    # Get all SSID profiles
+    print(mwm_api.get_ssid_profiles())
+    
     # Get managed devices
     print(mwm_api.get_managed_devices())
 
