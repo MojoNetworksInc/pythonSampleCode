@@ -12,11 +12,7 @@ import urllib.parse as urlparse
 # Import for loading json into python dictionary
 import json
 
-# Handling datetime and timestamps
-from datetime import datetime, timedelta
-from calendar import timegm
-
-REQUEST_TIMEOUT = 300  # 5 min
+REQUEST_TIMEOUT = 300  # 5 minutes
 
 HTTPS = "https"
 PATH_BASE = "{hostname}/new/"
@@ -26,6 +22,7 @@ PATH_LOGOUT = "/logout"
 PATH_LOCATION_TREE = "locations/tree"
 PATH_MANAGED_DEVICES = "devices/manageddevices"
 PATH_CLIENTS = "devices/clients"
+PATH_VIRTUAL_ACCESS_POINTS = "devices/aps"
 PATH_ASSOCIATION_ANALYTICS = "analytics/associationdata/{start_time}/{end_time}"    # Path parameters
 PATH_SSID_PROFILES = "templates/SSID_PROFILE"
 
@@ -301,6 +298,38 @@ class MwmApi:
             return response.json()
         else:
             print("Unrecognised status for managed device fetch" + response.status_code)
+
+
+    def get_virtual_aps(self):
+        """ Fetch Virtual APs with specified filter
+
+        :return: response object
+        """
+
+        # Virtual AP with (boxid = 1) OR (group = AUTHORIZED)
+        filter_value = {
+            "value": [
+                {
+                    "property": "boxid",
+                    "value": [1],
+                    "operator": "="
+                },
+                {
+                    "property": "group",
+                    "value": ['AUTHORIZED'],
+                    "operator": "="
+                }
+            ],
+            "operator": "OR"
+        }
+        query = QUERY_FILTER % json.dumps(filter_value)
+
+        response = self.request(PATH_VIRTUAL_ACCESS_POINTS, query)
+
+        if response.status_code == requests.codes.ok:
+            return response.json()
+        else:
+            print("Unrecognised status for virtual AP fetch" + response.status_code)
 
 if __name__ == '__main__':
 

@@ -28,7 +28,7 @@ if __name__ == '__main__':
         
     with MwmApi(mwm_service_hostname) as mwm_api:
         loginResponse = mwm_api.login(client, login_timeout, kvs_auth_data)
-        #print(loginResponse)
+        print(loginResponse)
 
         # Get managed devices
         managedDeviceResponse = mwm_api.get_managed_devices()
@@ -43,3 +43,15 @@ if __name__ == '__main__':
         analytics_start_time = int(round(start))
         analytics_end_time = int(round(time.time()))
         mwm_api.download_association_analytics_file("assocAnalytics_%s" % analytics_end_time, analytics_start_time, analytics_end_time, 'JSON', True)
+
+        # Get Clients
+        clientResponse = mwm_api.get_clients()
+        print(clientResponse)
+
+        #Get Virtual Access Points
+        vapResponse = mwm_api.get_virtual_aps()
+        print(vapResponse)
+
+        # Get SSID Profiles
+        ssidResponse = mwm_api.get_ssid_profiles()
+        print(ssidResponse)
