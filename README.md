@@ -18,9 +18,9 @@ This repository contains python based sample codes which can be imported and use
 Anyone can clone/fork this repo to extend and execute the Python files and try out various Mojo API calls.
 
 # Code Structure
-* Use the mojoApiRunner.py to execute the same code.
-* 'mwmApi.py' contains the functions to access data from MWM service.
-* 'mlpApi.py' contains the functions to access data from MLP service.
+* Use the `mojoApiRunner.py` to execute the same code.
+* `mwmApi.py` contains the functions to access data from MWM service.
+* `mlpApi.py` contains the functions to access data from MLP service.
 
 
 # Reference Documentation
