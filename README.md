@@ -18,9 +18,13 @@ This repository contains python based sample codes which can be imported and use
 Anyone can clone/fork this repo to extend and execute the Python files and try out various Mojo API calls.
 
 # Code Structure
-* Use the `mojoApiRunner.py` to execute the same code.
-* `mwmApi.py` contains the functions to access data from MWM service.
-* `mlpApi.py` contains the functions to access data from MLP service.
+* Use the `mojoApiRunner.py` to execute the sample code. Change the following fields in this file:
+  - In main modify the value of the variable 'mlp_host' to the hostname of the MLP service. Also modify the KVS authentication information
+* `mwmApi.py` contains the functions to access data from MWM service. To access the MWM service directly, modify the follign fields in this file:
+  - In main modify the value of the variable 'host' to the hostname of the MWM srvice. Also modify the KVS authentication information
+  - If you want to change the API version being used, modify the PATH_API_WEBSERVICE constant.
+* `mlpApi.py` contains the functions to access data from MLP service. This file contains functions to log into MLP service, fetch the user's allowed MWM service and logout. To run this file:
+  - In main modify the value of the 'host' variable to the hostname of the MLP service. Also modify the KVS authentication information.
 
 
 # Reference Documentation
