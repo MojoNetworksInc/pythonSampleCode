@@ -25,6 +25,7 @@ PATH_CLIENTS = "devices/clients"
 PATH_VIRTUAL_ACCESS_POINTS = "devices/aps"
 PATH_ASSOCIATION_ANALYTICS = "analytics/associationdata/{start_time}/{end_time}"    # Path parameters
 PATH_SSID_PROFILES = "templates/SSID_PROFILE"
+PATH_DEVICE_TEMPLATES = "templates/DEVICE_TEMPLATE"
 
 QUERY_FILTER = "filter=%s"
 QUERY_LOCATION_ID = "locationid=%s"
@@ -44,7 +45,7 @@ DELETE
 #Login using KVS
 #Fetch Location Tree
 #Fetch Managed Devices
-Fetch Clients
+#Fetch Clients
 Example API calls which cover the following,
     #Using filters - encoding the URL should be considerd
     #Using Query params
@@ -175,7 +176,19 @@ class MwmApi:
         if response.status_code == requests.codes.ok:
             return response.json()
         else:
-            print("Unrecognised status for location tree fetch" + response.status_code)
+            print("Unrecognised status for fetch ssid profile" + response.status_code)
+
+    def get_device_templates(self):
+        """
+        Fetch all Device Templates
+        
+        """
+        response = self.request(PATH_DEVICE_TEMPLATES)
+
+        if response.status_code == requests.codes.ok:
+            return response.json()
+        else:
+            print("Unrecognised status for fetch device templates" + response.status_code)
 		
     def get_location_tree(self):
         """ Fetch location tree
@@ -269,7 +282,7 @@ class MwmApi:
 
 
     def get_clients(self):
-        """ Fetch managed device with specified filter
+        """ Fetch clients with specified filter
 
         :return: response object
         """
@@ -297,7 +310,7 @@ class MwmApi:
         if response.status_code == requests.codes.ok:
             return response.json()
         else:
-            print("Unrecognised status for managed device fetch" + response.status_code)
+            print("Unrecognised status for client fetch" + response.status_code)
 
 
     def get_virtual_aps(self):
@@ -333,7 +346,7 @@ class MwmApi:
 
 if __name__ == '__main__':
 
-    # MWM Server API instance
+    # MWM Server API hostname
     host = "training.mojonetworks.com"
     mwm_api = MwmApi(host)
 
@@ -352,6 +365,9 @@ if __name__ == '__main__':
     
     # Get all SSID profiles
     print(mwm_api.get_ssid_profiles())
+
+    # Get all Device Templates
+    print(mwm_api.get_device_templates())
     
     # Get managed devices
     print(mwm_api.get_managed_devices())
