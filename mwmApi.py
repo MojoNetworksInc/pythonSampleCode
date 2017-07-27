@@ -24,6 +24,7 @@ PATH_MANAGED_DEVICES = "devices/manageddevices"
 PATH_CLIENTS = "devices/clients"
 PATH_VIRTUAL_ACCESS_POINTS = "devices/aps"
 PATH_ASSOCIATION_ANALYTICS = "analytics/associationdata/{start_time}/{end_time}"    # Path parameters
+PATH_VISIBILITY_ANALYTICS = "analytics/visibilitydata/{start_time}/{end_time}"    # Path parameters
 PATH_SSID_PROFILES = "templates/SSID_PROFILE"
 PATH_DEVICE_TEMPLATES = "templates/DEVICE_TEMPLATE"
 
@@ -280,6 +281,54 @@ class MwmApi:
         else:
             print("Unrecognised status while retrieving file" + response.status_code)
 
+
+    def download_visibility_analytics_file(
+            self, filename, start_time, end_time, file_format='JSON', obfuscate_mac=True):
+        """ Requests for generation of visibility analytics file and then download it.
+
+        :param filename: name of file to write downloaded content to
+        :param start_time: start time of analytics data
+        :param end_time: end time of analytics data
+        :param file_format: file format (CSV, Binary)
+        :param obfuscate_mac: whether to obfuscate mac ids or not
+        :return:
+        """
+
+        # construct query param string
+        query = QUERY_FILE_FORMAT % file_format + '&' + QUERY_MAC_OBFUSCATE % "true" if obfuscate_mac else "false"
+
+        # Set path params to relative path string formatter
+        visibility_analytics_uri = PATH_VISIBILITY_ANALYTICS.format(start_time=start_time, end_time=end_time)
+        #print(visibility_analytics_uri)
+        # will get uri for generated file download
+        response = self.request(visibility_analytics_uri, query)
+        
+        if response.status_code != requests.codes.ok:
+            print("Unrecognised status for visibility analytics file generation request" + response.status_code)
+            return
+        decodedContent = response.content.decode("utf-8")
+        print(decodedContent)
+        # construct url for file download using received uri
+        url = urlparse.urlunparse((
+            HTTPS,
+            PATH_BASE.format(hostname=self.hostname),
+            decodedContent,
+            '',
+            '',
+            ''
+        ))
+        print(url)
+        r = requests.get(url, stream=True, cookies=self.cookie_jar, timeout=REQUEST_TIMEOUT, verify=False)
+
+        if response.status_code == requests.codes.ok:
+            # save file
+            with open(filename+"."+file_format.lower(), 'wb') as f:
+                for chunk in r.iter_content(chunk_size=1024):
+                    if chunk:
+                        f.write(chunk)
+        else:
+            print("Unrecognised status while retrieving file" + response.status_code)
+    
 
     def get_clients(self):
         """ Fetch clients with specified filter

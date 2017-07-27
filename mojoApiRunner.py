@@ -44,6 +44,12 @@ if __name__ == '__main__':
         analytics_end_time = int(round(time.time()))
         mwm_api.download_association_analytics_file("assocAnalytics_%s" % analytics_end_time, analytics_start_time, analytics_end_time, 'JSON', True)
 
+        # Download Visibility Analytics File
+        start = time.time()-(24*60*60*1000)
+        analytics_start_time = int(round(start))
+        analytics_end_time = int(round(time.time()))
+        mwm_api.download_visibility_analytics_file("visibAnalytics_%s" % analytics_end_time, analytics_start_time, analytics_end_time, 'CSV', True)
+
         # Get Clients
         clientResponse = mwm_api.get_clients()
         print(clientResponse)
