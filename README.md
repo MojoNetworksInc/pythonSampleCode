@@ -1,9 +1,14 @@
 # About the Project
-This project provides sample codes that leverage the Mojo REST APIs to perform:
-* A key-based login to Mojo Launchpad and Mojo Wireless Manager
-* Fetch services from Mojo Launchpad
-* Fetch, create, & modify SSID Profiles and Device Templates
-* Get Analytics Data
+This project provides sample codes that leverage the Mojo REST APIs to demonstrate the following:
+* A key-based login to:
+- Mojo Launchpad (MLP)
+- Mojo Wireless Manager (MWM)
+- Mojo Guest Manager (MGM)
+* Fetch list of services from Mojo Launchpad.
+* For Mojo Wireless Manager service:
+- Fetch, create, & modify SSID Profiles and Device Templates
+* For Mojo Guest Manager service:
+- Get Analytics data
 
 # Purpose
 This project has been primarily created for API end users to get a quick understanding of Mojo REST APIs for some of the most common use cases with Mojo products.

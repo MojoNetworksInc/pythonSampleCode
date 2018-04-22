@@ -6,8 +6,17 @@ This file runs API calls on Mojo Launch Pad
 # Import requests for making API requests
 import requests
 
+# NOTE: Please use a valid certificate.
+# this sample will disable warning "InsecureRequestWarning: Unverified HTTPS request is being made"
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 # Import for building urls
-import urllib.parse as urlparse
+#  -- for python 3.x
+import urllib.parse as urlparse 
+
+#  -- for python 2.7
+#import urlparse
 
 # Import for loading json into python dictionary
 import json
@@ -94,7 +103,7 @@ class MlpApi:
         """
 
         response = self.request(
-            self.PATH_KVS_LOGIN,
+            relative_path=self.PATH_KVS_LOGIN,
             method="GET",
             query_parameters={
                 "key_id": kvs_service_data["keyId"],
@@ -104,6 +113,7 @@ class MlpApi:
 
         if response.status_code == requests.codes.ok:
             self.cookie_jar = response.cookies
+            print("MLP login")
             print(response.json())
             return response.json()
         else:
@@ -114,11 +124,13 @@ class MlpApi:
         """ Logout from service """
 
         response = self.request(
-            self.PATH_KVS_LOGOUT,
+            relative_path=self.PATH_KVS_LOGOUT,
             method="GET"
         )
 
         if response.status_code == requests.codes.ok:
+            print("MLP logout")
+            print(response.json())
             return response.json()
         else:
             print("Unrecognised status for logout" + response.status_code)
@@ -129,15 +141,30 @@ class MlpApi:
 
         :return: URL
         """
-        response = self.request(self.PATH_SERVICES, query_parameters={"type": "amc"})
+        response = self.request(relative_path=self.PATH_SERVICES, query_parameters={"type": "amc"})
 
         if response.status_code == requests.codes.ok:
             response_json = response.json()
             for customer_service in response_json["data"]["customerServices"]:
                 return urlparse.urlsplit(customer_service["service"]["service_url"])[1]
-
         else:
             print("Unrecognised status for fetching services available for customer" + response.status_code)
+
+
+    def get_mgm_service_url(self):
+        """ Fetch service URL for MGM
+
+        :return: URL
+        """
+        response = self.request(relative_path=self.PATH_SERVICES, query_parameters={"type": "gms"})
+
+        if response.status_code == requests.codes.ok:
+            response_json = response.json()
+            for customer_service in response_json["data"]["customerServices"]:
+                return urlparse.urlsplit(customer_service["service"]["service_url"])[1]
+        else:
+            print("Unrecognised status for fetching services available for customer" + response.status_code)
+
 
 
 if __name__ == '__main__':
@@ -148,12 +175,11 @@ if __name__ == '__main__':
     # KVS Credentials
     kvs_auth_data = {
         "keyId": "KEY-ATN59618-1",
-        "keyValue": "42ff84734541cbd98f674b02555330ef",
-        "cname": "ATN596",
+        "keyValue": "42ff84734541cbd98f674b02555330ef"
     }
 
     with MlpApi(host) as mlp_api:
         print(mlp_api.login(kvs_auth_data))
         print(mlp_api.get_mwm_service_url())
-
+        print(mlp_api.get_mgm_service_url())
 
